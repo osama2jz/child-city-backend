@@ -11,9 +11,9 @@ const productSchema = new Schema({
     ref: "Category",
     required: [true, "categoryId is Required."],
   },
-  season: {
-    type: String,
-    enum: ["Winters Collections", "Summers Collection"],
+  subCategory: {
+    type: Schema.Types.ObjectId,
+    ref: "SubCategory",
   },
   colors: {
     type: [String],

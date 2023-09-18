@@ -1,10 +1,16 @@
 import order from "../models/model.order.js";
+import product from "../models/model.product.js";
 
 //add order with mongo
 export const addOrder = async (req, res) => {
   const data = req.body;
+  let products = data?.product.map((obj) => obj?._id);
   try {
     await order.create(data);
+    await product.updateMany(
+      { _id: { $in: products } },
+      { quantity: { $inc: -1 } }
+    );
     res.json({ message: "Order added successful" });
   } catch (error) {
     if (error.code === 11000) {

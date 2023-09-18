@@ -32,14 +32,24 @@ export const editCategory = async (req, res) => {
 //all category with mongo
 export const viewAllCategories = async (req, res) => {
   try {
-    const found = await category.find();
+    const found = await category
+      .aggregate([
+        {
+          $lookup: {
+            from: "subcategories", // Replace with your actual collection name
+            localField: "_id",
+            foreignField: "category",
+            as: "subCategories",
+          },
+        },
+      ])
+      .exec();
     res.json({ message: "Category Found.", data: found });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 //status change with mongo
 export const statusChange = async (req, res) => {
