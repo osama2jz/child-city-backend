@@ -12,13 +12,12 @@ const categorySchema = new Schema({
   },
   description: {
     type: String,
-  },
-  order: {
-    type: Number,
+    required: [true, "Description is Required."],
   },
   blocked: { type: Boolean, default: false },
   image: {
     type: String,
+    required: [true, "Image is Required."],
   },
 });
 const category = mongoose.model("Category", categorySchema);

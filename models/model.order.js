@@ -30,31 +30,37 @@ const addressSchema = new Schema({
   },
 });
 
-const orderSchema = new Schema({
-  product: { type: [productSchema] },
-  totalPrice: {
-    type: Number,
-    required: [true, "Price is Required."],
+const orderSchema = new Schema(
+  {
+    product: { type: [productSchema] },
+    totalPrice: {
+      type: Number,
+      required: [true, "Price is Required."],
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    discountedPrice: {
+      type: Number,
+    },
+    paymentMode: {
+      type: String,
+      required: [true, "Payment Mode is Required."],
+    },
+    paymentReceipt: {
+      type: String,
+    },
+    orderNo: {
+      type: String,
+    },
+    address: {
+      type: addressSchema,
+    },
+    status: { type: String, required: [true, "Status is Required."] },
   },
-  userId: {
-    type: Schema.ObjectId,
-  },
-  discountedPrice: {
-    type: Number,
-  },
-  paymentMode: {
-    type: String,
-    required: [true, "Payment Mode is Required."],
-  },
-  paymentReceipt: {
-    Type: String,
-  },
-  address: {
-    type: addressSchema,
-  },
-  status: { type: String, required: [true, "Status is Required."] },
-});
-
+  { timestamps: true }
+);
 
 const order = mongoose.model("Order", orderSchema);
 export default order;

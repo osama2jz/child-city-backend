@@ -4,11 +4,9 @@ const { Schema } = mongoose;
 const productSchema = new Schema({
   product: {
     type: Object,
-    required: [true, "Product is Required."],
   },
   quantity: {
     type: Number,
-    required: [true, "Quantity is Required."],
   },
 });
 
@@ -21,14 +19,22 @@ const revenueSchema = new Schema({
   userId: {
     type: Schema.ObjectId,
   },
+  customerName: {
+    type: String,
+  },
+  title: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
   paymentMode: {
     type: String,
-    required: [true, "Payment Mode is Required."],
   },
   paymentReceipt: {
     Type: String,
   },
-  status: { type: String, required: [true, "Status is Required."] },
+  status: { type: String },
 });
 const revenue = mongoose.model("Revenue", revenueSchema);
 export default revenue;

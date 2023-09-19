@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 //signin with monngo
 export const Signin = async (req, res) => {
   const { email, password } = req.body;
-  const found = await user.findOne({ email: email }).select("+password");
+  const found = await user.findOne({ email: email }).select("+password").lean();
   if (!found) {
     return res.status(404).json({ error: "User not found" });
   }
@@ -15,23 +15,34 @@ export const Signin = async (req, res) => {
   }
   const secretKey = "abcsp32i42j32io3dj293j";
   const token = jwt.sign(found, secretKey);
-  res.json({ message: "Sign-in successful", status: 200, token });
+  res.json({
+    message: "Sign-in successful",
+    status: 200,
+    user: {
+      token,
+      name: found.name,
+      email: found.email,
+      phoneNumber: found.phoneNumber,
+      userId: found._id
+    },
+  });
 };
 
 //signup with monngo
 export const SignUp = async (req, res) => {
   const data = req.body;
-  const alreadyExists = await user.findOne({ email: email });
+  const alreadyExists = await user.findOne({ email: data.email });
   if (alreadyExists) {
     return res.status(400).json({ error: "Email already taken" });
   }
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
     data.password = hashedPassword;
     await user.create(data);
 
     res.json({ message: "Sign-up successful" });
   } catch (error) {
+    console.log(error);
     if (error.code === 11000) {
       return res.status(400).json({ message: "email already exists" });
     }

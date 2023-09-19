@@ -15,6 +15,7 @@ const subCategorySchema = new Schema({
     type: String,
     required: [true, "Description is Required."],
   },
+  showFilters: { type: Boolean, default: false },
   blocked: { type: Boolean, default: false },
 });
 const subCategory = mongoose.model("SubCategory", subCategorySchema);

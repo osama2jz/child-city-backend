@@ -11,6 +11,7 @@ import Category from "./routes/route.category.js";
 import AboutUs from "./routes/route.aboutUs.js";
 import SubCategory from "./routes/route.subCategory.js";
 import ProfilingRouter from "./routes/route.userProfiling.js";
+import Coupen from "./routes/route.coupen.js";
 
 const app = express();
 app.use(cors());
@@ -30,6 +31,7 @@ app.use("/expense", Expense);
 app.use("/category", Category);
 app.use("/sub-category", SubCategory);
 app.use("/aboutus", AboutUs);
+app.use("/coupen", Coupen);
 
 app.use((error, req, res, next) => {
   return res.status(500).json({ message: "Something went Wrong." });

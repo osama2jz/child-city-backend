@@ -7,15 +7,26 @@ export const addSale = async (req, res) => {
 
   try {
     const categoriesToUpdate = data.category;
+    const subCategoriesToUpdate = data.subCategory;
     await sale.updateMany(
-      { category: { $in: categoriesToUpdate } },
       {
-        $pull: { category: { $in: categoriesToUpdate } },
+        category: { $in: categoriesToUpdate },
+      },
+      {
+        $pull: {
+          category: { $in: categoriesToUpdate },
+          subCategory: { $in: subCategoriesToUpdate },
+        },
       }
     );
     await sale.create(data);
     await product.updateMany(
-      { category: { $in: categoriesToUpdate } },
+      {
+        category: { $in: categoriesToUpdate },
+        ...(subCategoriesToUpdate.length > 0
+          ? { subCategory: { $in: subCategoriesToUpdate } }
+          : {}),
+      },
       { sale: data.sale }
     );
     await sale.deleteMany({ category: [] });
@@ -31,21 +42,32 @@ export const addSale = async (req, res) => {
 //edit sale with mongo
 export const editSale = async (req, res) => {
   const _id = req.params.id;
+  const categoriesToUpdate = data.category;
+  const subCategoriesToUpdate = data.subCategory;
   try {
     const found = await sale.findOne({ _id });
     if (!found) {
       return res.status(404).json({ error: "Sale not found" });
     }
     await sale.updateMany(
-      { category: { $in: categoriesToUpdate } },
       {
-        $pull: { category: { $in: categoriesToUpdate } },
+        category: { $in: categoriesToUpdate },
+      },
+      {
+        $pull: {
+          category: { $in: categoriesToUpdate },
+          subCategory: { $in: subCategoriesToUpdate },
+        },
       }
     );
     await sale.findOneAndUpdate({ _id }, req.body);
-    const categoriesToUpdate = data.category;
     await product.updateMany(
-      { category: { $in: categoriesToUpdate } },
+      {
+        category: { $in: categoriesToUpdate },
+        ...(subCategoriesToUpdate.length > 0
+          ? { subCategory: { $in: subCategoriesToUpdate } }
+          : {}),
+      },
       { sale: data.sale }
     );
     res.json({ message: "Sale updated successfully" });
@@ -74,8 +96,14 @@ export const deleteSale = async (req, res) => {
     }
     await sale.deleteOne({ _id });
     const categoriesToUpdate = found.category;
+    const subCategoriesToUpdate = found.subCategory;
     await product.updateMany(
-      { category: { $in: categoriesToUpdate } },
+      {
+        category: { $in: categoriesToUpdate },
+        ...(subCategoriesToUpdate.length > 0
+          ? { subCategory: { $in: subCategoriesToUpdate } }
+          : {}),
+      },
       { sale: 0 }
     );
     res.json({ message: "Sale Deleted." });
@@ -93,14 +121,25 @@ export const statusChange = async (req, res) => {
       return res.status(404).json({ error: "Category not found" });
     }
     const categoriesToUpdate = found.category;
+    const subCategoriesToUpdate = found.subCategory;
     if (found.blocked) {
       await product.updateMany(
-        { category: { $in: categoriesToUpdate } },
+        {
+          category: { $in: categoriesToUpdate },
+          ...(subCategoriesToUpdate.length > 0
+            ? { subCategory: { $in: subCategoriesToUpdate } }
+            : {}),
+        },
         { sale: found.sale }
       );
     } else {
       await product.updateMany(
-        { category: { $in: categoriesToUpdate } },
+        {
+          category: { $in: categoriesToUpdate },
+          ...(subCategoriesToUpdate.length > 0
+            ? { subCategory: { $in: subCategoriesToUpdate } }
+            : {}),
+        },
         { sale: 0 }
       );
     }

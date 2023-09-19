@@ -1,6 +1,24 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
+const addressSchema = new Schema({
+  province: {
+    type: String,
+    required: [true, "Province is Required."],
+  },
+  city: {
+    type: String,
+    required: [true, "City is Required."],
+  },
+  address: {
+    type: String,
+    required: [true, "Address is Required."],
+  },
+  postalCode: {
+    type: Number,
+  },
+});
+
 const userSchema = new Schema({
   email: {
     type: String,
@@ -17,7 +35,10 @@ const userSchema = new Schema({
   isAdmin: {
     type: Boolean,
     default: false,
-  },  
+  },
+  addresses: {
+    type: [addressSchema],
+  },
   phoneNumber: { type: String, required: [true, "Phone Number is required."] },
   blocked: { type: Boolean, default: false },
 });

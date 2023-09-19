@@ -9,10 +9,11 @@ export const addOrder = async (req, res) => {
     await order.create(data);
     await product.updateMany(
       { _id: { $in: products } },
-      { quantity: { $inc: -1 } }
+      { $inc: { quantity: -1 } }
     );
     res.json({ message: "Order added successful" });
   } catch (error) {
+    console.log(error);
     if (error.code === 11000) {
       return res.status(400).json({ message: "Order already exists" });
     }
@@ -23,9 +24,21 @@ export const addOrder = async (req, res) => {
 //get orders with mongo
 export const viewOrders = async (req, res) => {
   try {
-    const found = await order.find();
+    const found = await order.find().populate("userId");
     res.json({ message: "Orderss Found.", data: found });
   } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+//get orders with mongo
+export const viewOrderById = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const found = await order.find({ userId: id });
+    res.json({ message: "Orderss Found.", data: found });
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

@@ -42,6 +42,7 @@ export const viewAllCategories = async (req, res) => {
             as: "subCategories",
           },
         },
+        { $sort: { order: 1 } },
       ])
       .exec();
     res.json({ message: "Category Found.", data: found });

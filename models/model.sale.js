@@ -15,6 +15,11 @@ const saleSchema = new Schema({
     ref: "Category",
     required: [true, "Categories required."],
   },
+  subCategory: {
+    type: [Schema.ObjectId],
+    ref: "SubCategory",
+    required: [true, "Sub Categories required."],
+  },
   description: {
     type: String,
     required: [true, "Description is Required."],
