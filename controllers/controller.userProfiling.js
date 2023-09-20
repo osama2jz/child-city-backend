@@ -23,7 +23,8 @@ export const Signin = async (req, res) => {
       name: found.name,
       email: found.email,
       phoneNumber: found.phoneNumber,
-      userId: found._id
+      userId: found._id,
+      isAdmin: found.isAdmin,
     },
   });
 };

@@ -3,6 +3,10 @@ import category from "../models/model.category.js";
 //add category with mongo
 export const addCategory = async (req, res) => {
   const data = req.body;
+  const found = await category.findOne({ title: data.title });
+  if (found) {
+    return res.status(404).json({ error: "Category already exists." });
+  }
   try {
     await category.create(data);
     res.json({ message: "Category added successful" });
@@ -21,6 +25,10 @@ export const editCategory = async (req, res) => {
     const found = await category.findOne({ _id });
     if (!found) {
       return res.status(404).json({ error: "Category not found" });
+    }
+    const alreadExists = await category.findOne({ title: data.title });
+    if (alreadExists) {
+      return res.status(404).json({ error: "Category already exists." });
     }
     await category.findOneAndUpdate({ _id }, req.body);
     res.json({ message: "Category updated successfully" });
