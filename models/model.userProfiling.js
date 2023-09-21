@@ -2,18 +2,19 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const addressSchema = new Schema({
-  province: {
+  address: {
     type: String,
-    required: [true, "Province is Required."],
+    required: [true, "Address is Required."],
   },
   city: {
     type: String,
     required: [true, "City is Required."],
   },
-  address: {
+  province: {
     type: String,
-    required: [true, "Address is Required."],
+    required: [true, "Province is Required."],
   },
+
   postalCode: {
     type: Number,
   },

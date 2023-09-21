@@ -25,6 +25,7 @@ export const Signin = async (req, res) => {
       phoneNumber: found.phoneNumber,
       userId: found._id,
       isAdmin: found.isAdmin,
+      addresses: found.addresses || [],
     },
   });
 };
@@ -61,6 +62,21 @@ export const editProfile = async (req, res) => {
     }
     await user.findOneAndUpdate({ _id }, req.body);
     res.json({ message: "Profile updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+//change address with mongo
+export const updateAddress = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const userFound = await user.findOne({ _id });
+    if (!userFound) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    await user.findOneAndUpdate({ _id }, { addresses: req.body });
+    res.json({ message: "Address updated successfully" });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -123,7 +139,7 @@ export const changePassword = async (req, res) => {
       await user.findOneAndUpdate({ _id: _id }, { password: hashedPassword });
       res.json({ message: "Password Updated." });
     } else {
-      res.json({ message: "Old password is wrong." });
+      res.json({ message: "Old password is wrong.", statue: false });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
