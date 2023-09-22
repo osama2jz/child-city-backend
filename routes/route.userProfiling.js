@@ -19,7 +19,7 @@ router.put("/editprofile/:id", editProfile);
 router.put("/changeAddress/:id", updateAddress);
 router.put("/changePassword/:id", changePassword);
 router.get("/", viewAllUsers);
-router.delete("/users/delete/:id", deleteUser);
+router.delete("/:id", deleteUser);
 router.post("/changeStatus/:id", statusChange);
 
 export default router;

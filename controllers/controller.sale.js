@@ -1,47 +1,51 @@
 import sale from "../models/model.sale.js";
 import product from "../models/model.product.js";
+import mongoose from "mongoose";
 
 //add sale with mongo
 export const addSale = async (req, res) => {
   const data = req.body;
 
   try {
-    const categoriesToUpdate = data.category;
-    const subCategoriesToUpdate = data.subCategory;
-    await sale.updateMany(
-      {
-        category: { $in: categoriesToUpdate },
-      },
-      {
-        $pull: {
-          category: { $in: categoriesToUpdate },
-          subCategory: { $in: subCategoriesToUpdate },
-        },
-      }
-    );
-    await sale.create(data);
-    await product.updateMany(
-      {
-        category: { $in: categoriesToUpdate },
-        ...(subCategoriesToUpdate.length > 0
-          ? { subCategory: { $in: subCategoriesToUpdate } }
-          : {}),
-      },
-      { sale: data.sale }
-    );
-    await sale.deleteMany({ category: [] });
-    res.json({ message: "Sale added successfully" });
+    // await sale.deleteMany({});
+    // await sale.insertMany(data);
+    const promises = data.map(async (obj, ind) => {
+      const categoriesToUpdate = obj.category;
+      const subCategoriesToUpdate = obj.subCategory;
+
+      const _id = obj._id || new mongoose.mongo.ObjectId();
+      console.log(categoriesToUpdate, subCategoriesToUpdate,data.sale);
+
+      obj = { _id: undefined, ...obj };
+      return [
+        await sale.updateOne(
+          { _id: _id.toString() },
+          { ...obj },
+          { upsert: true }
+        ),
+        await product.updateMany(
+          {
+            category: categoriesToUpdate,
+            ...(subCategoriesToUpdate?.length > 0
+              ? { subCategory: { $in: subCategoriesToUpdate } }
+              : {}),
+          },
+          { sale: obj.sale }
+        ),
+      ];
+    });
+    const result = await Promise.all(promises);
+    res.json({ message: "Sale Updated successfully", result });
   } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({ message: "Sale already exists" });
-    }
-    res.status(500).json({ error: "Internal server error" });
+    console.log(error);
+    res.status(500).json({ error: "Internal server error", err: error });
   }
 };
 
 //edit sale with mongo
 export const editSale = async (req, res) => {
   const _id = req.params.id;
+  const data = req.body;
   const categoriesToUpdate = data.category;
   const subCategoriesToUpdate = data.subCategory;
   try {

@@ -8,7 +8,6 @@ const categorySchema = new Schema({
   },
   subTitle: {
     type: String,
-    required: [true, "Sub Title is Required."],
   },
   description: {
     type: String,

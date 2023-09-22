@@ -32,6 +32,15 @@ const addressSchema = new Schema({
 
 const orderSchema = new Schema(
   {
+    name: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
     product: { type: [productSchema] },
     totalPrice: {
       type: Number,

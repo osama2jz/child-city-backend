@@ -5,7 +5,10 @@ import jwt from "jsonwebtoken";
 //signin with monngo
 export const Signin = async (req, res) => {
   const { email, password } = req.body;
-  const found = await user.findOne({ email: email }).select("+password").lean();
+  const found = await user
+    .findOne({ email: email, blocked: false })
+    .select("+password")
+    .lean();
   if (!found) {
     return res.status(404).json({ error: "User not found" });
   }

@@ -11,14 +11,13 @@ const saleSchema = new Schema({
     required: [true, "Sale Percent is Required."],
   },
   category: {
-    type: [Schema.ObjectId],
+    type: Schema.ObjectId,
     ref: "Category",
-    required: [true, "Categories required."],
+    required: [true, "Category is required."],
   },
   subCategory: {
     type: [Schema.ObjectId],
     ref: "SubCategory",
-    required: [true, "Sub Categories required."],
   },
   description: {
     type: String,

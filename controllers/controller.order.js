@@ -24,7 +24,10 @@ export const addOrder = async (req, res) => {
 //get orders with mongo
 export const viewOrders = async (req, res) => {
   try {
-    const found = await order.find().populate("userId");
+    const found = await order
+      .find()
+      .populate("userId")
+      .sort({ createdAt: "desc" });
     res.json({ message: "Orderss Found.", data: found });
   } catch (error) {
     console.log(error);

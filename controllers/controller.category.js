@@ -21,17 +21,33 @@ export const addCategory = async (req, res) => {
 //edit category with mongo
 export const editCategory = async (req, res) => {
   const _id = req.params.id;
+  const data = req.body;
   try {
     const found = await category.findOne({ _id });
     if (!found) {
       return res.status(404).json({ error: "Category not found" });
     }
     const alreadExists = await category.findOne({ title: data.title });
-    if (alreadExists) {
+    if (alreadExists && alreadExists._id.toString() !== _id) {
       return res.status(404).json({ error: "Category already exists." });
     }
     await category.findOneAndUpdate({ _id }, req.body);
     res.json({ message: "Category updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+//edit category with mongo
+export const changeOrder = async (req, res) => {
+  const data = req.body;
+  const array = data.ids;
+  try {
+    const promises = array.map((id, index) =>
+      category.updateOne({ _id: id }, { order: index + 1 })
+    );
+    const result = await Promise.all(promises);
+    res.json({ message: "Categories Order updated successfully", result });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -48,9 +64,9 @@ export const viewAllCategories = async (req, res) => {
             localField: "_id",
             foreignField: "category",
             as: "subCategories",
+            pipeline: [{ $match: { blocked: false } }],
           },
         },
-        { $sort: { order: 1 } },
       ])
       .exec();
     res.json({ message: "Category Found.", data: found });

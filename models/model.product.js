@@ -25,6 +25,10 @@ const productSchema = new Schema(
     sale: {
       type: Number,
     },
+    actualPrice: {
+      type: Number,
+      required: [true, "Actual Price is Required."],
+    },
     price: {
       type: Number,
       required: [true, "Price is Required."],

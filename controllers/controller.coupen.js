@@ -3,6 +3,12 @@ import coupen from "../models/model.coupen.js";
 //add category with mongo
 export const addCoupen = async (req, res) => {
   const data = req.body;
+  const found = await coupen.findOne({
+    $or: [{ name: data.name }, { code: data.code }],
+  });
+  if (found) {
+    return res.status(404).json({ error: "Coupen already exists." });
+  }
   try {
     await coupen.create(data);
     res.json({ message: "Coupen added successfully" });
@@ -33,11 +39,11 @@ export const editCoupen = async (req, res) => {
 export const checkCoupen = async (req, res) => {
   const code = req.params.code;
   try {
-    const found = await coupen.findOne({ code })
+    const found = await coupen.findOne({ code });
     if (!found || found.blocked) {
       return res.status(404).json({ error: "Coupen not found" });
     }
-    res.json({ message: "Coupen Found successfully", found:found.off });
+    res.json({ message: "Coupen Found successfully", found: found.off });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
