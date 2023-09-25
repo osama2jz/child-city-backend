@@ -1,5 +1,6 @@
 import order from "../models/model.order.js";
 import product from "../models/model.product.js";
+import sgMail from "@sendgrid/mail";
 
 //add order with mongo
 export const addOrder = async (req, res) => {
@@ -12,8 +13,27 @@ export const addOrder = async (req, res) => {
       { $inc: { quantity: -1 } }
     );
     res.json({ message: "Order added successful" });
+    sgMail.setApiKey(
+      process.env.SENDGRID_KEY ||
+        "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"
+    );
+    const msg = {
+      to: data.email,
+      from: "admin@childcity.shop",
+      subject: "Order Confirmation",
+      text: `Your order has been confirm. Your order ID is ${data.orderNo}. Thank you for shopping with us.`,
+      // html: '<p>This is a test email sent using SendGrid in Node.js</p>',
+    };
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log(JSON.stringify(error, null, 2));
+      });
   } catch (error) {
-    console.log(error);
     if (error.code === 11000) {
       return res.status(400).json({ message: "Order already exists" });
     }

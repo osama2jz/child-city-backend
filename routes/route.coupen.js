@@ -13,7 +13,7 @@ router.post("/", addCoupen);
 router.put("/:id", editCoupen);
 router.get("/", viewAllCoupens);
 router.delete("/:id", deleteCoupen);
-router.post("/:code", checkCoupen);
+router.post("/:code/:phone", checkCoupen);
 router.post("/changeStatus/:id", statusChange);
 
 export default router;

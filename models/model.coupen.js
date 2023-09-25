@@ -14,6 +14,9 @@ const coupenSchema = new Schema({
     type: Number,
     required: [true, "Off Amount is Required."],
   },
+  oneTime: {
+    type: Boolean,
+  },
   description: {
     type: String,
     required: [true, "Description is Required."],

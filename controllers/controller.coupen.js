@@ -1,4 +1,5 @@
 import coupen from "../models/model.coupen.js";
+import order from "../models/model.order.js";
 
 //add category with mongo
 export const addCoupen = async (req, res) => {
@@ -38,9 +39,11 @@ export const editCoupen = async (req, res) => {
 //check coupen with mongo
 export const checkCoupen = async (req, res) => {
   const code = req.params.code;
+  const phone = req.params.phone;
   try {
     const found = await coupen.findOne({ code });
-    if (!found || found.blocked) {
+    const alreadyOrdered = await order.findOne({ phone });
+    if (!found || found.blocked || (alreadyOrdered && found.oneTime)) {
       return res.status(404).json({ error: "Coupen not found" });
     }
     res.json({ message: "Coupen Found successfully", found: found.off });
