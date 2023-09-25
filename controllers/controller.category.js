@@ -67,6 +67,7 @@ export const viewAllCategories = async (req, res) => {
             pipeline: [{ $match: { blocked: false } }],
           },
         },
+        { $sort: { order: 1 } },
       ])
       .exec();
     res.json({ message: "Category Found.", data: found });

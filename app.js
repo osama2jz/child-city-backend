@@ -14,6 +14,8 @@ import ProfilingRouter from "./routes/route.userProfiling.js";
 import Coupen from "./routes/route.coupen.js";
 import Blog from "./routes/route.blog.js";
 import Faq from "./routes/route.faq.js";
+import Complaint from "./routes/route.complaint.js";
+import Stats from "./routes/route.stats.js";
 
 const app = express();
 app.use(cors());
@@ -36,6 +38,8 @@ app.use("/aboutus", AboutUs);
 app.use("/coupen", Coupen);
 app.use("/blog", Blog);
 app.use("/faq", Faq);
+app.use("/complaint", Complaint);
+app.use("/stats", Stats);
 
 app.use((error, req, res, next) => {
   return res.status(500).json({ message: "Something went Wrong." });
