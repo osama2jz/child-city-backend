@@ -36,7 +36,11 @@ export const editProduct = async (req, res) => {
 //all category with mongo
 export const viewAllProduct = async (req, res) => {
   try {
-    const found = await product.find().populate({ path: "category" }).populate({path:'subCategory'});
+    const found = await product
+      .find()
+      .populate({ path: "category" })
+      .populate({ path: "subCategory" })
+      .sort({ createdAt: "desc" });
     res.json({ message: "Product Found.", data: found });
   } catch (error) {
     console.log(error);

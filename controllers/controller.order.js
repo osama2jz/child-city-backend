@@ -66,6 +66,21 @@ export const viewOrderById = async (req, res) => {
   }
 };
 
+//delete order
+export const deleteOrder = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const found = await order.findOne({ _id });
+    if (!found) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    await order.deleteOne({ _id });
+    res.json({ message: "Order Deleted." });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 //status change with mongo
 export const statusChange = async (req, res) => {
   const _id = req.params.id;
