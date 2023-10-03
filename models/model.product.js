@@ -46,6 +46,10 @@ const productSchema = new Schema(
       type: String,
       required: [true, "Description is Required."],
     },
+    showOnHome: {
+      type: Boolean,
+      default: false,
+    },
     images: {
       type: [String],
       required: [true, "At least one image is Required."],

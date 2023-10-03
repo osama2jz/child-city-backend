@@ -48,6 +48,21 @@ export const viewAllProduct = async (req, res) => {
   }
 };
 
+//all home produtcs with mongo
+export const viewShowOnHome = async (req, res) => {
+  try {
+    const found = await product
+      .find({ showOnHome: true })
+      .populate({ path: "category" })
+      .populate({ path: "subCategory" })
+      .sort({ createdAt: "desc" });
+    res.json({ message: "Product Found.", data: found });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 //delete product with mongo
 export const deleteProduct = async (req, res) => {
   const _id = req.params.id;
