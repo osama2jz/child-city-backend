@@ -48,6 +48,19 @@ export const viewAllProduct = async (req, res) => {
   }
 };
 
+export const viewSingleProduct = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const found = await product
+      .findOne({ _id })
+      .populate({ path: "category" })
+      .populate({ path: "subCategory" });
+    res.json({ message: "Product Found.", data: found });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 //all home produtcs with mongo
 export const viewShowOnHome = async (req, res) => {
   try {
