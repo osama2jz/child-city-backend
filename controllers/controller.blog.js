@@ -37,6 +37,18 @@ export const viewAllBlogs = async (req, res) => {
   }
 };
 
+//all blogs with mongo
+export const viewSingleBlog = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const found = await blog.findOne({ _id });
+    res.json({ message: "Blog Found.", data: found });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 //delete blogs with mongo
 export const deleteBlogs = async (req, res) => {
   const _id = req.params.id;
