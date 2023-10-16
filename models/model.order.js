@@ -46,6 +46,12 @@ const orderSchema = new Schema(
       type: Number,
       required: [true, "Price is Required."],
     },
+    subtotal: {
+      type: Number,
+    },
+    coupen: {
+      type: Number,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
