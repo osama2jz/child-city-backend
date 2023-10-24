@@ -1,6 +1,7 @@
 import order from "../models/model.order.js";
 import product from "../models/model.product.js";
 import sgMail from "@sendgrid/mail";
+import revenue from "../models/model.revenue.js";
 
 //add order with mongo
 export const addOrder = async (req, res) => {
@@ -59,7 +60,18 @@ export const viewOrderById = async (req, res) => {
   const id = req.params.id;
   try {
     const found = await order.find({ userId: id });
-    res.json({ message: "Orderss Found.", data: found });
+    res.json({ message: "Orders Found.", data: found });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+//get single order with mongo
+export const viewSingleOrderById = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const found = await order.findOne({ _id:id });
+    res.json({ message: "Order Found.", data: found });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
@@ -91,6 +103,16 @@ export const statusChange = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
     await order.findOneAndUpdate({ _id }, { status: status });
+    if (status === "Delivered") {
+      await revenue.create({
+        customerName: found.name,
+        totalPrice: found.totalPrice,
+        paymentMode: found.paymentMode,
+        product: found.product,
+        title: "Product Order",
+        orderId: found._id,
+      });
+    }
     res.json({ message: "Status changed successfully" });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
